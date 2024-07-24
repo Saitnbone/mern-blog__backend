@@ -1,15 +1,16 @@
-// Импорты для проекта
+// Импорты пакетов для проекта
+// Importing packages for a project
 import express from "express";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import { validationResult } from "express-validator";
 
 // Импорт компонентов
+// Import components
 import { regValidation } from "./validations/registration.js";
-import User from "./models/User.js";
-import checkAuth from "./utils/checkAuth.js";
+import { postValidation } from "./validations/post.js";
+import * as UserController from "./controllers/UserController.js";
+import * as PostController from "./controllers/PostController.js";
+import checkAuth from "./middleware/checkAuth.js";
 
 dotenv.config();
 
@@ -24,7 +25,8 @@ mongoose
     console.log("DB error", error);
   });
 
-// Создание приложения express
+// Создание приложения express.js
+// Create an express.js application
 const app = express();
 
 app.use(express.json());
@@ -34,103 +36,34 @@ app.get("/", (req, res) => {
 });
 
 // Авторизация пользователей
-app.post("/auth/login", async (req, res) => {
-  try {
-    const user = await User.findOne({ email: req.body.email });
-
-    if (!user) {
-      return res.status(400).json({
-        message: "Wrong login or password",
-      });
-    }
-
-    const isValidPassword = await bcrypt.compare(
-      req.body.password,
-      user._doc.passwordHash
-    );
-    if (!isValidPassword) {
-      return res.status(400).json({
-        message: "Wrong login or password",
-      });
-    }
-
-    const token = jwt.sign(
-      {
-        _id: user._id,
-      },
-      process.env.SECRET_KEY,
-      { expiresIn: "30d" }
-    );
-
-    return res.json({ user, token });
-  } catch (error) {
-    console.log(err);
-    res.status(500).json({
-      message: "Failed to authorization",
-    });
-  }
-});
+// User authorization
+app.post("/auth/login", UserController.loginUser);
 
 // Регистрация новых пользователей
-app.post("/auth/registration", regValidation, async (req, res) => {
-  try {
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
-    const { email, password, fullName, avatarUrl } = req.body;
-
-    const existUser = await User.findOne({ email });
-    if (existUser) {
-      return res.status(400).json({ message: "Email already in use" });
-    }
-
-    // Шифрование пароля
-    const salt = await bcrypt.genSalt(10);
-    const passwordHash = await bcrypt.hash(password, salt);
-
-    // Подготовка документа пользователя
-    const doc = new User({
-      email,
-      fullName,
-      avatarUrl,
-      passwordHash,
-    });
-
-    const user = await doc.save();
-
-    // Токен шифрования
-    const token = jwt.sign(
-      {
-        _id: user._id,
-      },
-      process.env.SECRET_KEY,
-      { expiresIn: "30d" }
-    );
-
-    res.json({ user, token });
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({
-      message: "Failed to register",
-    });
-  }
-});
+// Register new users
+app.post("/auth/registration", regValidation, UserController.registrationUser);
 
 // Запрос на получение информации о себе
-app.get("/auth/me", checkAuth, (req, res) => {
-  try {
-    return res.json({
-      message: "true",
-    });
-  } catch (error) {
-    console.log(error);
-  }
-});
+// Request for information about yourself
+app.get("/auth/me", checkAuth, UserController.getUser);
+
+// Запрос на получение всех постов
+app.get("/posts", PostController.getAllPosts);
+
+// Запрос на получение одного поста
+app.get("/posts/:id", PostController.getOnePost);
+
+// запрос на создание поста
+app.post("/posts", checkAuth, postValidation, PostController.createPost);
+
+// Запрос на удаление поста
+app.delete("/posts/:id", checkAuth, PostController.deletePost);
+
+// Запрос на редактирование поста
+app.patch('/posts/:id', checkAuth, PostController.changePost)
 
 // Слушатель порта
+// Port listener
 app.listen(4444, (error) => {
   if (error) {
     console.log(error);
