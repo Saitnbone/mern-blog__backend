@@ -3,18 +3,11 @@
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import { validationResult } from "express-validator";
 
 // Контроллер для регистрации пользователя
 // Controller for user registration
 export const registrationUser = async (req, res) => {
   try {
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
     const { email, password, fullName, avatarUrl } = req.body;
 
     // Проверка на наличие email в базе данных
