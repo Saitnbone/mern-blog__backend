@@ -3,11 +3,10 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import multer, { diskStorage } from "multer";
+import multer from "multer";
 
 // Импорт компонентов
 // Import components
-import { regValidation } from "./validations/registration.js";
 import { postValidation } from "./validations/post.js";
 import { UserController, PostController } from "./controllers/index.js";
 import checkAuth from "./middleware/checkAuth.js";
@@ -97,7 +96,7 @@ app.patch("/posts/:id", checkAuth, handleErrors, PostController.changePost);
 
 // Слушатель порта
 // Port listener
-app.listen(4444, (error) => {
+app.listen(process.env.PORT, (error) => {
   if (error) {
     console.log(error);
   } else {
