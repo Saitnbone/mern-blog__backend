@@ -4,6 +4,7 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import multer from "multer";
+import cors from "cors";
 
 // Импорт компонентов
 // Import components
@@ -41,9 +42,15 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
+const corsOptions = {
+  origin: ["http://localhost:3000"],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+};
 
+// Подключение юзов для бекенда
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
+app.use(cors(corsOptions));
 
 app.get("/", (req, res) => {
   res.send("Hello world");
