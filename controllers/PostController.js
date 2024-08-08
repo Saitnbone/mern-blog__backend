@@ -25,6 +25,23 @@ export const createPost = async (req, res) => {
   }
 };
 
+export const getLastTags = async (req, res) => {
+  try {
+    const posts = await Post.find().limit(5).exec();
+    const tags = posts
+      .map((obj) => obj.tags)
+      .flat()
+      .slice(0, 5);
+
+    res.json(tags); // Возвращаем теги клиенту
+  } catch (error) {
+    res.status(500).json({
+      message: "Error getting tags",
+    });
+    console.log(error);
+  }
+};
+
 // Контроллер для получения всех постов
 // Controller to get all posts
 export const getAllPosts = async (req, res) => {
@@ -74,12 +91,9 @@ export const changePost = async (req, res) => {
       title: req.body.title,
       text: req.body.text,
       imageUrl: req.body.imageUrl,
-      tags: req.body.tags
-    }
-    const result = await Post.updateOne(
-      { _id: postId },
-      { $set: updateData}
-    );
+      tags: req.body.tags,
+    };
+    const result = await Post.updateOne({ _id: postId }, { $set: updateData });
     if (!result) {
       return res.status(404).json({
         message: "Post not found or data not modified",

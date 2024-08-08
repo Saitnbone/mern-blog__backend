@@ -28,7 +28,7 @@ mongoose
 
 // Создание приложения express.js
 // Create an express.js application
-const app = express();
+export const app = express();
 
 // Настройки для multer
 // Settings for multer
@@ -43,7 +43,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 const corsOptions = {
-  origin: ["http://localhost:3000"],
+  origin: [process.env.ORIGIN_URL],
   methods: ["GET", "POST", "PUT", "DELETE"],
 };
 
@@ -84,6 +84,11 @@ app.post("/uploads", checkAuth, upload.single("image"), (req, res) => {
 // Запрос на получение всех постов
 // Request to get all posts
 app.get("/posts", PostController.getAllPosts);
+
+app.get('/tags',PostController.getLastTags)
+
+// Запрос на получение тегов 
+app.get('posts/tags', PostController.getLastTags)
 
 // Запрос на получение одного поста
 // Request to receive one post
