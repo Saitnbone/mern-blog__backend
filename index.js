@@ -58,7 +58,7 @@ app.get("/", (req, res) => {
 
 // Авторизация пользователей
 // User authorization
-app.post("/auth/login", checkAuth, handleErrors, UserController.loginUser);
+app.post("/auth/login", handleErrors, UserController.loginUser);
 
 // Регистрация новых пользователей
 // Register new users
@@ -85,10 +85,10 @@ app.post("/uploads", checkAuth, upload.single("image"), (req, res) => {
 // Request to get all posts
 app.get("/posts", PostController.getAllPosts);
 
-app.get('/tags',PostController.getLastTags)
+app.get("/tags", PostController.getLastTags);
 
-// Запрос на получение тегов 
-app.get('posts/tags', PostController.getLastTags)
+// Запрос на получение тегов
+app.get("posts/tags", PostController.getLastTags);
 
 // Запрос на получение одного поста
 // Request to receive one post

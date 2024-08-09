@@ -33,7 +33,7 @@ export const getLastTags = async (req, res) => {
       .flat()
       .slice(0, 5);
 
-    res.json(tags); // Возвращаем теги клиенту
+    res.json(tags);
   } catch (error) {
     res.status(500).json({
       message: "Error getting tags",
