@@ -64,7 +64,7 @@ app.post("/auth/login", handleErrors, UserController.loginUser);
 // Register new users
 app.post(
   "/auth/registration",
-  checkAuth,
+  // checkAuth,
   handleErrors,
   UserController.registrationUser
 );
