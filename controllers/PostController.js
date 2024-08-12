@@ -1,5 +1,6 @@
 // Импорты
 // Imports
+import { populate } from "dotenv";
 import Post from "../models/Post.js";
 
 // Контроллер для создания поста
@@ -62,22 +63,24 @@ export const getOnePost = async (req, res) => {
   try {
     const postId = req.params.id;
 
+    // Ищем пост и увеличиваем счетчик просмотров
     const doc = await Post.findOneAndUpdate(
       { _id: postId },
       { $inc: { viewsCount: 1 } },
-      { returnDocument: "after" }
-    );
+      { returnDocument: "after" } // или { new: true } в зависимости от версии Mongoose
+    ).populate("user");
 
     if (!doc) {
       return res.status(404).json({
-        message: "Updeted post not found",
+        message: "Post not found",
       });
     }
+
     return res.status(200).json(doc);
   } catch (error) {
     console.log(error);
-    return res.status(404).json({
-      message: "Post not found",
+    return res.status(500).json({
+      message: "Failed to get the post",
     });
   }
 };

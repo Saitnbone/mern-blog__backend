@@ -13,6 +13,10 @@ const PostSchema = new mongoose.Schema(
       required: true,
     },
 
+    imageUrl: {
+      type: String,
+    },
+
     // Настройка для текста поста
     // Settings for post text
     text: {

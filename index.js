@@ -94,9 +94,9 @@ app.get("posts/tags", PostController.getLastTags);
 // Request to receive one post
 app.get("/posts/:id", PostController.getOnePost);
 
-// Запрос на создание поста
-// Request to create a post
-app.post("/posts", checkAuth, postValidation, PostController.createPost);
+// Создание поста
+// Create a post
+app.post("/add-post", checkAuth, postValidation, PostController.createPost);
 
 // Запрос на удаление поста
 // Request to delete a post
