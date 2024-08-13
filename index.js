@@ -44,7 +44,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 const corsOptions = {
   origin: [process.env.ORIGIN_URL],
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
 };
 
 // Подключение юзов для бекенда
