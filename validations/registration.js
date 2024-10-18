@@ -1,8 +1,6 @@
-// Импорты
 // Imports
 import { body } from "express-validator";
 
-//  Настройка для валидации формы авторизации
 // Settings for authorization form validation
 export const regValidation = [
   body("email", "Поле должно содержать адрес почты").isEmail(),

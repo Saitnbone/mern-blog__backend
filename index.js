@@ -26,11 +26,9 @@ mongoose
     console.log("DB error", error);
   });
 
-// Создание приложения express.js
 // Create an express.js application
 export const app = express();
 
-// Настройки для multer
 // Settings for multer
 const storage = multer.diskStorage({
   destination: (_, __, cd) => {
@@ -47,7 +45,7 @@ const corsOptions = {
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
 };
 
-// Подключение юзов для бекенда
+// Connecting users for the backend
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 app.use(cors(corsOptions));
@@ -56,7 +54,6 @@ app.get("/", (req, res) => {
   res.send("Hello world");
 });
 
-// Авторизация пользователей
 // User authorization
 app.post("/auth/login", handleErrors, UserController.loginUser);
 
